@@ -18,12 +18,12 @@ import { getStorage } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-
 import { getAuth } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBGqgQrjIzdZDc7wNxQFsHxivAp382fTGI",
-  authDomain: "portfolio-b526b.firebaseapp.com",
-  projectId: "portfolio-b526b",
-  storageBucket: "portfolio-b526b.firebasestorage.app",
-  messagingSenderId: "780991581141",
-  appId: "1:780991581141:web:9b1d0a2c55e457993fcb5c"
+  apiKey: "AIzaSyBcq8nWL1_QCddRPVy348SNour5gQIX5E0",
+  authDomain: "portfolio-31add.firebaseapp.com",
+  projectId: "portfolio-31add",
+  storageBucket: "portfolio-31add.firebasestorage.app",
+  messagingSenderId: "867294442656",
+  appId: "1:867294442656:web:9520a24f461cdcaf3385c5"
 };
 
 export const app = initializeApp(firebaseConfig);
