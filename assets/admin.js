@@ -213,7 +213,7 @@ function editWorkModalHTML(w,cats,isNew){
     </div>
     <div id="wk-media-wrap" style="${mtype==="color"?"display:none":""}">
       <label class="f"><span class="lab">링크로 등록</span>
-        <input class="inp" id="wk-msrc" placeholder="https://..." value="${(w.media&&w.media.src&&!w.media.src.startsWith('data:')&&!w.media.src.includes('firebasestorage'))?esc(w.media.src):''}"></label>
+        <input class="inp" id="wk-msrc" placeholder="https://..." oninput="window.onMediaUrlInput(this)" value="${(w.media&&w.media.src&&!w.media.src.startsWith('data:')&&!w.media.src.includes('firebasestorage'))?esc(w.media.src):''}"></label>
       <div class="hint" style="margin:-8px 0 12px">또는 파일을 직접 올릴 수 있어요. Firebase Storage에 업로드되어 주소가 자동으로 채워집니다.</div>
       <label class="f"><span class="lab">파일 업로드</span>
         <input class="inp" id="wk-file" type="file" accept="${mtype==="video"?"video/*":"image/*"}" onchange="window.onMediaFilePick(this)"></label>
@@ -226,6 +226,16 @@ function onMediaTypeChange(){
   document.getElementById("wk-media-wrap").style.display=t==="color"?"none":"";
   const fileInp=document.getElementById("wk-file");
   if(fileInp) fileInp.setAttribute("accept",t==="video"?"video/*":"image/*");
+  const urlInp=document.getElementById("wk-msrc");
+  if(urlInp && urlInp.value.trim()) onMediaUrlInput(urlInp);
+}
+function onMediaUrlInput(el){
+  const v=el.value.trim();
+  const previewEl=document.getElementById("wk-preview");
+  if(!v){ previewEl.innerHTML=""; return; }
+  pendingMediaData=null; // 링크를 입력하면 이전에 올려둔 파일은 취소합니다
+  const t=document.getElementById("wk-mtype").value;
+  previewEl.innerHTML=mediaPreviewHTML({type:t,src:v});
 }
 async function onMediaFilePick(el){
   const file=el.files&&el.files[0]; if(!file)return;
@@ -386,7 +396,7 @@ async function seedDefaults(){
 Object.assign(window, {
   openMenuManager, moveMenu, editMenu,
   syncSlug, toggleSubs, addSubRow, refreshSubEmpty,
-  editWork, deleteWorkConfirm, onMediaTypeChange, onMediaFilePick, pickHue,
+  editWork, deleteWorkConfirm, onMediaTypeChange, onMediaFilePick, onMediaUrlInput, pickHue,
   editHomePage, editAboutPage, editGenericPage,
   editCommBanner, addCommLink, editCommLink, deleteCommLink,
   openSettingsManager,
