@@ -10,7 +10,7 @@
 //   works/{autoId}               (컬렉션) { no, title, cat, year, hue, desc, media:{type,src} }
 // ============================================================================
 
-import { db } from "./firebase-config.js";
+import { db } from "./firebase-config.js?v=3";
 import {
   doc, getDoc, setDoc, addDoc, deleteDoc, updateDoc,
   collection, getDocs, query, orderBy, onSnapshot, writeBatch,
