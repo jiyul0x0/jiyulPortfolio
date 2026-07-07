@@ -122,18 +122,20 @@ async function renderHome(){
       <span class="ic">${iconFor(m)}</span><h3>${esc(m.label)}</h3></a>`).join("");
   const editBtn = ADMIN?`<button class="admin-edit-fab" onclick="window.editHomePage()">✎ 배너 편집</button>`:"";
   const hasImg = !!p.bannerImage;
-  const heroClass = hasImg ? "hero has-image" : "hero";
-  const heroStyle = hasImg
-    ? ` style="background-image:linear-gradient(180deg,rgba(20,50,35,.45),rgba(20,50,35,.25)),url('${esc(p.bannerImage)}');background-size:cover;background-position:center"`
-    : "";
+  const heroInner = `<div class="wrap hero-inner">
+      <h1>${esc(p.title)}</h1>
+      <p class="role" style="max-width:52ch;margin:0 auto">${esc(p.body)}</p>
+    </div>`;
+  const heroSection = hasImg
+    ? `<section class="hero has-image">
+        <img class="hero-bg-img" src="${esc(p.bannerImage)}" alt="">
+        <div class="hero-overlay"></div>
+        ${editBtn}${heroInner}
+      </section>`
+    : `<section class="hero">${editBtn}<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>${heroInner}</section>`;
   await renderShell(`
     <div class="anim">
-      <section class="${heroClass}"${heroStyle}>${editBtn}<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
-        <div class="wrap hero-inner">
-          <h1>${esc(p.title)}</h1>
-          <p class="role" style="max-width:52ch;margin:0 auto;color:var(--muted)">${esc(p.body)}</p>
-        </div>
-      </section>
+      ${heroSection}
       <div class="wrap view">
         <div class="nav-cards">${cards||'<p class="empty">노출된 메뉴가 없어요.</p>'}</div>
       </div>
