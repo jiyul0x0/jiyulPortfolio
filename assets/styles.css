@@ -146,7 +146,7 @@ a.chip{transition:.16s}a.chip:hover{background:var(--green-soft-2);transform:tra
   background:var(--surface-soft);border:1px solid var(--line);box-shadow:var(--shadow-md);transition:.2s}
 .work:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
 .work .cover{aspect-ratio:4/3;position:relative}
-.work .cover .sheen{position:absolute;inset:0;
+.work .cover .sheen{position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(180deg,rgba(255,255,255,.35),transparent 40%)}
 .work .hoverlay{position:absolute;left:0;right:0;bottom:0;padding:16px 18px;
   display:flex;align-items:flex-end;justify-content:space-between;gap:10px;
@@ -220,7 +220,7 @@ a.chip{transition:.16s}a.chip:hover{background:var(--green-soft-2);transform:tra
   padding:22px 0 12px}.back:hover{color:var(--green-deep)}
 .detail-hero{aspect-ratio:16/8;border-radius:24px;position:relative;overflow:hidden;
   box-shadow:var(--shadow-md);margin-bottom:26px}
-.detail-hero .sheen{position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.3),transparent 45%)}
+.detail-hero .sheen{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(255,255,255,.3),transparent 45%)}
 .dspec{display:grid;grid-template-columns:230px 1fr;gap:40px}
 .spec .srow{display:flex;justify-content:space-between;gap:14px;padding:12px 0;
   border-top:1px solid var(--line);font-size:14px}
