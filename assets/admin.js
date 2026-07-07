@@ -324,12 +324,6 @@ async function editGenericPage(slug,label){
 }
 
 /* ============================================================================ 커미션 */
-async function editCommBanner(){
-  const c=await api.getCommission();
-  openModal(()=>`<h3>배너 문구 편집</h3><label class="f"><span class="lab">배너 문구</span><input class="inp" id="cb-title" value="${esc(c.bannerTitle||'commission')}"></label>`,
-    async()=>{ const c2=await api.getCommission(); c2.bannerTitle=document.getElementById("cb-title").value.trim()||"commission"; await api.saveCommission(c2); toast("저장됨"); return true; },
-    null);
-}
 function addCommLink(){ editCommLinkForm(-1); }
 function editCommLink(i){ editCommLinkForm(i); }
 async function editCommLinkForm(i){
@@ -391,12 +385,7 @@ async function seedDefaults(){
     { label:"Rigging", slug:"rigging" }, { label:"Design", slug:"design" },
     { label:"Video Edit", slug:"video-edit" }, { label:"Html/css", slug:"html-css" },
   ]});
-  await api.saveMenu({ label:"commission", slug:"commission", type:"commission", order:3, visible:true, submenus:[
-    { label:"Rigging", url:"https://www.artmug.co.kr/" },
-    { label:"Design", url:"https://www.artmug.co.kr/" },
-    { label:"Video edit", url:"https://www.artmug.co.kr/" },
-    { label:"html/css", url:"https://www.artmug.co.kr/" },
-  ]});
+  await api.saveMenu({ label:"commission", slug:"commission", type:"commission", order:3, visible:true, submenus:[] });
   await api.savePage("home", { title:"작은 움직임까지, 정성껏.", body:"Live2D 리깅 커미션과 개인 작업을 모아두는 아카이브입니다." });
   await api.savePage("about", {
     profileTitle:"Profile",
@@ -404,11 +393,7 @@ async function seedDefaults(){
     expTitle:"Work Experience",
     expBody:"2024 — 경력 한 줄\n2023 — 경력 한 줄",
   });
-  await api.saveCommission({ bannerTitle:"commission", links:[
-    { label:"아트머그", url:"https://www.artmug.co.kr/" },
-    { label:"멜로밍", url:"https://www.melloming.com/" },
-    { label:"기타", url:"https://open.kakao.com/" },
-  ]});
+  await api.saveCommission({ links:[] });
   await api.saveWork({ title:"예시 작업물", cat:"rigging", year:new Date().getFullYear(), hue:"#54a97a", desc:"예시 설명입니다. 편집 버튼으로 내용을 바꿔주세요.", media:{type:"color",src:""} });
 }
 
@@ -418,6 +403,6 @@ Object.assign(window, {
   syncSlug, toggleSubs, addSubRow, refreshSubEmpty,
   editWork, deleteWorkConfirm, onMediaTypeChange, onMediaFilePick, onMediaUrlInput, pickHue,
   editHomePage, editAboutPage, editGenericPage,
-  editCommBanner, addCommLink, editCommLink, deleteCommLink,
+  addCommLink, editCommLink, deleteCommLink,
   openSettingsManager,
 });
