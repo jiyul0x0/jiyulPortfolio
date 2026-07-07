@@ -17,6 +17,12 @@ export function shade(hex,amt){
 }
 export function accNo(n){ return "No."+String(n||0).padStart(3,"0"); }
 
+export function youtubeId(url){
+  if(!url) return null;
+  const m = String(url).match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
 export function mediaBlock(w,wrapClass,ratio){
   const style=`aspect-ratio:${ratio||'4/3'}`;
   const hue = w.hue||"#54a97a";
@@ -25,6 +31,12 @@ export function mediaBlock(w,wrapClass,ratio){
       style="width:100%;height:100%;object-fit:cover;display:block"><div class="sheen"></div></div>`;
   }
   if(w.media&&w.media.type==="video"&&w.media.src){
+    const yid=youtubeId(w.media.src);
+    if(yid){
+      return `<div class="${wrapClass}" style="${style};background:#111">
+        <iframe src="https://www.youtube.com/embed/${yid}" style="width:100%;height:100%;display:block;border:0"
+          allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>`;
+    }
     return `<div class="${wrapClass}" style="${style};background:#111"><video src="${esc(w.media.src)}" muted loop autoplay playsinline
       style="width:100%;height:100%;object-fit:cover;display:block"></video><div class="sheen"></div></div>`;
   }
