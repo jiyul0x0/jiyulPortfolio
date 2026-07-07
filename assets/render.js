@@ -102,7 +102,7 @@ async function renderShell(inner){
 
   app().innerHTML=`${adminStrip}
     <header class="nav"><div class="nav-inner">
-      <a class="brand" href="#/home"><span class="mark">${esc((s.brandKo||"J")[0])}</span>
+      <a class="brand" href="#/home">${s.logoUrl?`<img src="${esc(s.logoUrl)}" alt="logo" style="width:36px;height:36px;border-radius:12px;object-fit:cover;box-shadow:0 6px 14px rgba(47,128,85,.30)">`:`<span class="mark">${esc((s.brandKo||"J")[0])}</span>`}
         <span class="txt">${esc(s.brandKo||"")}<small>${esc(s.brandEn||"")}</small></span></a>
       <button class="nav-toggle" aria-label="메뉴" onclick="document.querySelector('nav.menu').classList.toggle('open')">≡</button>
       <nav class="menu">${nav}</nav>
@@ -121,9 +121,14 @@ async function renderHome(){
   const cards=menus.map(m=>`<a class="nav-card" href="#/${m.slug}"><span class="arrow">↗</span>
       <span class="ic">${iconFor(m)}</span><h3>${esc(m.label)}</h3></a>`).join("");
   const editBtn = ADMIN?`<button class="admin-edit-fab" onclick="window.editHomePage()">✎ 배너 편집</button>`:"";
+  const hasImg = !!p.bannerImage;
+  const heroClass = hasImg ? "hero has-image" : "hero";
+  const heroStyle = hasImg
+    ? ` style="background-image:linear-gradient(180deg,rgba(20,50,35,.45),rgba(20,50,35,.25)),url('${esc(p.bannerImage)}');background-size:cover;background-position:center"`
+    : "";
   await renderShell(`
     <div class="anim">
-      <section class="hero">${editBtn}<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+      <section class="${heroClass}"${heroStyle}>${editBtn}<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
         <div class="wrap hero-inner">
           <h1>${esc(p.title)}</h1>
           <p class="role" style="max-width:52ch;margin:0 auto;color:var(--muted)">${esc(p.body)}</p>
