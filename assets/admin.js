@@ -4,9 +4,9 @@
 // 함수들을 호출합니다. 저장은 전부 Firestore(그리고 파일 업로드는 Storage)로 갑니다.
 // ============================================================================
 
-import { api } from "./data.js";
-import { esc, shade, accNo, mediaBlock, router, youtubeId } from "./render.js";
-import { storage } from "./firebase-config.js";
+import { api } from "./data.js?v=3";
+import { esc, shade, accNo, mediaBlock, router, youtubeId } from "./render.js?v=3";
+import { storage } from "./firebase-config.js?v=3";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
 
 const HUES=["#54a97a","#e0a458","#6f86d6","#c47ac0","#4bb3c4","#e08a5f","#5f9ec4","#8f7fd6","#4faf88"];
