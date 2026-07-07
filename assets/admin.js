@@ -84,7 +84,7 @@ async function moveMenu(id,dir){
 }
 async function editMenu(id){
   const menus=await api.getMenus();
-  const m=id?menus.find(x=>x.id===id):{id:"",label:"",slug:"",type:"page",visible:true,submenus:[]};
+  const m=id?menus.find(x=>x.id===id):{id:"",label:"",slug:"",type:"page",visible:true,submenus:[],order:menus.length};
   const isNew=!id;
   openModal(()=>menuModalHTML(m,isNew),()=>{
     const g=q=>document.getElementById(q);
@@ -93,6 +93,7 @@ async function editMenu(id){
     m.type=g("mm-type").value; m.visible=g("mm-visible").checked;
     m.submenus = m.type==="page" ? [] : collectSubs();
     if(!m.label){ alert("메뉴 이름을 입력해 주세요."); return false; }
+    if(typeof m.order!=="number") m.order=menus.length;
     if(isNew) delete m.id;
     return api.saveMenu(m).then(()=>true);
   }, id?()=>{ if(confirm(`"${m.label}" 메뉴를 삭제할까요?`)) return api.deleteMenu(id).then(()=>true); return false; }:null);
