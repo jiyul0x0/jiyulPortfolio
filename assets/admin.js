@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { api } from "./data.js";
-import { esc, shade, accNo, mediaBlock, router } from "./render.js";
+import { esc, shade, accNo, mediaBlock, router, youtubeId } from "./render.js";
 import { storage } from "./firebase-config.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
 
@@ -164,7 +164,11 @@ function collectSubs(){
 /* ============================================================================ 작업물 */
 let pendingMediaData=null;
 function mediaPreviewHTML(media){
-  if(media.type==="video") return `<video src="${esc(media.src)}" muted controls style="width:160px;border-radius:12px;box-shadow:var(--shadow-sm);display:block"></video>`;
+  if(media.type==="video"){
+    const yid=youtubeId(media.src);
+    if(yid) return `<iframe src="https://www.youtube.com/embed/${yid}" style="width:220px;aspect-ratio:16/9;border:0;border-radius:12px;box-shadow:var(--shadow-sm);display:block" allowfullscreen></iframe>`;
+    return `<video src="${esc(media.src)}" muted controls style="width:160px;border-radius:12px;box-shadow:var(--shadow-sm);display:block"></video>`;
+  }
   return `<img src="${esc(media.src)}" style="width:160px;border-radius:12px;box-shadow:var(--shadow-sm);display:block">`;
 }
 async function editWork(id){
@@ -214,7 +218,7 @@ function editWorkModalHTML(w,cats,isNew){
     <div id="wk-media-wrap" style="${mtype==="color"?"display:none":""}">
       <label class="f"><span class="lab">링크로 등록</span>
         <input class="inp" id="wk-msrc" placeholder="https://..." oninput="window.onMediaUrlInput(this)" value="${(w.media&&w.media.src&&!w.media.src.startsWith('data:')&&!w.media.src.includes('firebasestorage'))?esc(w.media.src):''}"></label>
-      <div class="hint" style="margin:-8px 0 12px">또는 파일을 직접 올릴 수 있어요. Firebase Storage에 업로드되어 주소가 자동으로 채워집니다.</div>
+      <div class="hint" style="margin:-8px 0 12px">영상은 유튜브 링크(youtu.be, youtube.com)를 그대로 붙여넣으면 자동으로 재생 플레이어로 바뀝니다. 또는 파일을 직접 올릴 수 있어요 — Firebase Storage에 업로드되어 주소가 자동으로 채워집니다.</div>
       <label class="f"><span class="lab">파일 업로드</span>
         <input class="inp" id="wk-file" type="file" accept="${mtype==="video"?"video/*":"image/*"}" onchange="window.onMediaFilePick(this)"></label>
       <div id="wk-preview" style="margin-top:4px">${(w.media&&w.media.src)?mediaPreviewHTML(w.media):''}</div>
