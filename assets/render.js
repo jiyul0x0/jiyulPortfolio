@@ -26,6 +26,7 @@ export function youtubeId(url){
 export function mediaBlock(w,wrapClass,ratio){
   const style=`aspect-ratio:${ratio||'4/3'}`;
   const hue = w.hue||"#54a97a";
+  const isDetail = wrapClass==="detail-hero";
   if(w.media&&w.media.type==="image"&&w.media.src){
     return `<div class="${wrapClass}" style="${style}"><img src="${esc(w.media.src)}" alt="${esc(w.title)}"
       style="width:100%;height:100%;object-fit:cover;display:block"><div class="sheen"></div></div>`;
@@ -37,6 +38,12 @@ export function mediaBlock(w,wrapClass,ratio){
         <iframe src="https://www.youtube.com/embed/${yid}" style="width:100%;height:100%;display:block;border:0"
           allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe></div>`;
     }
+    if(isDetail){
+      // 상세 페이지: 자동재생 없이 실제 컨트롤(음량 포함)로 재생
+      return `<div class="${wrapClass}" style="${style};background:#111"><video src="${esc(w.media.src)}" controls playsinline
+        style="width:100%;height:100%;object-fit:cover;display:block"></video></div>`;
+    }
+    // 목록 카드: 여러 개가 동시에 자동재생되므로 무음 미리보기 유지
     return `<div class="${wrapClass}" style="${style};background:#111"><video src="${esc(w.media.src)}" muted loop autoplay playsinline
       style="width:100%;height:100%;object-fit:cover;display:block"></video><div class="sheen"></div></div>`;
   }
