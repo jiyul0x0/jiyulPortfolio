@@ -179,6 +179,54 @@ function collectSubs(){
 
 /* ============================================================================ 작업물 */
 let pendingMediaData=null;
+
+/* ---- 공용 이미지 선택 도구 (로고 / 배너 등에서 재사용) ---------------------- */
+let pendingImgData={};
+function imagePickerHTML(prefix,label,currentSrc){
+  const showUrl = currentSrc && !currentSrc.startsWith("data:") && !currentSrc.includes("firebasestorage");
+  return `<label class="f"><span class="lab">${label}</span>
+      <input class="inp" id="${prefix}-url" placeholder="https://..." oninput="window.onImgUrlInput('${prefix}')" value="${showUrl?esc(currentSrc):''}"></label>
+    <div class="hint" style="margin:-8px 0 10px">또는 파일을 직접 올릴 수 있어요.</div>
+    <label class="f"><span class="lab">파일 업로드</span>
+      <input class="inp" id="${prefix}-file" type="file" accept="image/*" onchange="window.onImgFilePick(this,'${prefix}')"></label>
+    <div style="display:flex;align-items:center;gap:12px;margin-top:4px">
+      <div id="${prefix}-preview">${currentSrc?`<img src="${esc(currentSrc)}" style="width:110px;border-radius:12px;box-shadow:var(--shadow-sm);display:block">`:''}</div>
+      <button type="button" class="btn ghost sm" onclick="window.clearImgField('${prefix}')">이미지 제거</button>
+    </div>`;
+}
+function onImgUrlInput(prefix){
+  const v=(document.getElementById(prefix+"-url").value||"").trim();
+  delete pendingImgData[prefix];
+  const prev=document.getElementById(prefix+"-preview");
+  prev.innerHTML=v?`<img src="${esc(v)}" style="width:110px;border-radius:12px;box-shadow:var(--shadow-sm);display:block">`:"";
+}
+async function onImgFilePick(el,prefix){
+  const file=el.files&&el.files[0]; if(!file) return;
+  const prev=document.getElementById(prefix+"-preview");
+  prev.innerHTML=`<div class="hint">업로드 중...</div>`;
+  try{
+    const path=`images/${prefix}_${Date.now()}_${file.name}`;
+    const fileRef=ref(storage,path);
+    await uploadBytes(fileRef,file);
+    const url=await getDownloadURL(fileRef);
+    pendingImgData[prefix]=url;
+    prev.innerHTML=`<img src="${esc(url)}" style="width:110px;border-radius:12px;box-shadow:var(--shadow-sm);display:block">`;
+    const urlInp=document.getElementById(prefix+"-url"); if(urlInp) urlInp.value="";
+  }catch(err){
+    prev.innerHTML=`<div class="hint" style="color:var(--warn)">업로드 실패: Storage 설정을 확인해 주세요.</div>`;
+    console.error(err);
+  }
+}
+function clearImgField(prefix){
+  pendingImgData[prefix]="";
+  const urlInp=document.getElementById(prefix+"-url"); if(urlInp) urlInp.value="";
+  const prev=document.getElementById(prefix+"-preview"); if(prev) prev.innerHTML="";
+}
+function getImageValue(prefix,existing){
+  if(Object.prototype.hasOwnProperty.call(pendingImgData,prefix)) return pendingImgData[prefix];
+  const urlVal=(document.getElementById(prefix+"-url")?.value||"").trim();
+  return urlVal || existing || "";
+}
 function mediaPreviewHTML(media){
   if(media.type==="video"){
     const yid=youtubeId(media.src);
@@ -286,10 +334,22 @@ async function deleteWorkConfirm(id,goBack){
 /* ============================================================================ 페이지 (홈/about/일반) */
 async function editHomePage(){
   const p=await api.getPage("home")||{title:"",body:""};
+  pendingImgData={};
   openModal(()=>`<h3>홈 배너 편집</h3>
       <label class="f"><span class="lab">제목</span><input class="inp" id="hp-title" value="${esc(p.title||'')}"></label>
-      <label class="f"><span class="lab">설명</span><textarea class="inp" id="hp-body" style="min-height:110px">${esc(p.body||'')}</textarea></label>`,
-    async()=>{ await api.savePage("home",{title:document.getElementById("hp-title").value.trim(),body:document.getElementById("hp-body").value.trim()}); toast("저장됨"); return true; },
+      <label class="f"><span class="lab">설명</span><textarea class="inp" id="hp-body" style="min-height:110px">${esc(p.body||'')}</textarea></label>
+      <div class="subgroup"><div class="gh">배너 배경 이미지</div>
+        <div class="hint" style="margin-top:-4px">비워두면 기본 그라데이션 배경을 사용합니다.</div>
+        ${imagePickerHTML('banner','배경 이미지',p.bannerImage||'')}
+      </div>`,
+    async()=>{
+      await api.savePage("home",{
+        title:document.getElementById("hp-title").value.trim(),
+        body:document.getElementById("hp-body").value.trim(),
+        bannerImage:getImageValue('banner',p.bannerImage||''),
+      });
+      toast("저장됨"); return true;
+    },
     null);
 }
 async function editAboutPage(){
@@ -353,18 +413,24 @@ async function deleteCommLink(i){
 async function openSettingsManager(){
   const s=await api.getSettings();
   const menus=await api.getMenus();
+  pendingImgData={};
   const seedNote = menus.length===0 ? `<div class="notice-box"><span>🌱</span><span>Firestore가 비어있어요. 아래 버튼으로 예시 메뉴·페이지·작업물을 한 번에 채워넣을 수 있어요. (이미 있는 데이터는 건드리지 않습니다)</span></div>
       <div class="btn-row" style="margin-top:0;margin-bottom:22px"><button class="btn ghost sm" id="seed-btn" type="button">예시 데이터로 시작하기</button></div>` : "";
   openModal(()=>`<h3>사이트 설정</h3>${seedNote}
       <div class="frow">
         <label class="f"><span class="lab">이름 (한글)</span><input class="inp" id="st-ko" value="${esc(s.brandKo||'')}"></label>
         <label class="f"><span class="lab">이름 (영문)</span><input class="inp" id="st-en" value="${esc(s.brandEn||'')}"></label></div>
-      <label class="f"><span class="lab">태그라인</span><input class="inp" id="st-tag" value="${esc(s.tagline||'')}"></label>`,
+      <label class="f"><span class="lab">태그라인</span><input class="inp" id="st-tag" value="${esc(s.tagline||'')}"></label>
+      <div class="subgroup"><div class="gh">로고 이미지</div>
+        <div class="hint" style="margin-top:-4px">비워두면 이름 첫 글자로 만든 기본 아이콘을 사용합니다.</div>
+        ${imagePickerHTML('logo','로고 이미지',s.logoUrl||'')}
+      </div>`,
     async()=>{
       await api.saveSettings({
         brandKo:document.getElementById("st-ko").value.trim()||"지율",
         brandEn:document.getElementById("st-en").value.trim(),
         tagline:document.getElementById("st-tag").value.trim(),
+        logoUrl:getImageValue('logo',s.logoUrl||''),
       });
       toast("저장됨"); return true;
     }, null);
@@ -405,4 +471,5 @@ Object.assign(window, {
   editHomePage, editAboutPage, editGenericPage,
   addCommLink, editCommLink, deleteCommLink,
   openSettingsManager,
+  onImgUrlInput, onImgFilePick, clearImgField,
 });
