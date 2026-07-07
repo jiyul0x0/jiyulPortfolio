@@ -123,7 +123,7 @@ function menuModalHTML(m,isNew){
       <div class="subgroup" id="sub-editor" data-kind="${m.type==="commission"?"link":"cat"}">
         ${(m.submenus||[]).map(s=>m.type==="commission"?subRowLinkHTML(s.label,s.url):subRowHTML(s.label,s.slug)).join("")}
         <div class="empty" id="sub-empty" style="${(m.submenus||[]).length?'display:none':''};padding:16px">서브메뉴가 없어요.</div>
-        <button class="btn ghost sm" onclick="window.addSubRow()" style="margin-top:8px">+ 서브메뉴 추가</button></div></div>`;
+        <button class="btn ghost sm" id="sub-add-btn" onclick="window.addSubRow()" style="margin-top:8px">+ 서브메뉴 추가</button></div></div>`;
 }
 function subRowHTML(label,slug){ return `<div class="rowedit sub-item">
   <input class="inp sub-label" value="${esc(label)}" placeholder="카테고리 이름" oninput="this.closest('.sub-item').querySelector('.sub-slug').value=this.value.toLowerCase().replace(/\\s+/g,'-')">
@@ -153,7 +153,7 @@ function toggleSubs(){
 function addSubRow(){
   const ed=document.getElementById("sub-editor");
   const html=ed.dataset.kind==="link"?subRowLinkHTML("",""):subRowHTML("","");
-  ed.querySelector("button").insertAdjacentHTML("beforebegin",html); refreshSubEmpty();
+  document.getElementById("sub-add-btn").insertAdjacentHTML("beforebegin",html); refreshSubEmpty();
 }
 function refreshSubEmpty(){ const ed=document.getElementById("sub-editor"); document.getElementById("sub-empty").style.display=ed.querySelectorAll(".sub-item").length?"none":""; }
 function collectSubs(){
