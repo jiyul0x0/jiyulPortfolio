@@ -4,7 +4,7 @@
 // 그 버튼들의 실제 동작(모달 열기 등)은 admin.js 에서 window.* 로 등록합니다.
 // ============================================================================
 
-import { api, subscribeAll, debounce } from "./data.js";
+import { api, subscribeAll, debounce } from "./data.js?v=2";
 
 export let ADMIN = false;
 const app = () => document.getElementById("app");
