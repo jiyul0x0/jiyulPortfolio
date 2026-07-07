@@ -118,10 +118,13 @@ a.chip{transition:.16s}a.chip:hover{background:var(--green-soft-2);transform:tra
 .hero .hours{font-size:14px;color:var(--muted);margin-top:6px}
 .hero .chips{display:flex;gap:9px;justify-content:center;flex-wrap:wrap;margin-top:24px}
 .hero-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:26px}
-.hero.has-image{background-color:#123}
-.hero.has-image .blob{display:none}
+.hero.has-image{padding:0;background:#123}
+.hero-bg-img{display:block;width:100%;height:auto}
+.hero-overlay{position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(15,40,28,.55) 0%,rgba(15,40,28,.25) 55%,rgba(15,40,28,.4) 100%)}
+.hero.has-image .hero-inner{position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px}
 .hero.has-image h1,.hero.has-image .en,.hero.has-image .role{color:#fff}
-.hero.has-image .role{color:rgba(255,255,255,.85)}
 
 /* ---------------- BUTTONS ---------------- */
 .btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;border-radius:999px;
