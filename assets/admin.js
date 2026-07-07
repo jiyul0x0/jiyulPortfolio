@@ -92,6 +92,12 @@ async function editMenu(id){
     m.slug=g("mm-slug").value.trim()||m.label.toLowerCase().replace(/\s+/g,"-");
     m.type=g("mm-type").value; m.visible=g("mm-visible").checked;
     m.submenus = m.type==="page" ? [] : collectSubs();
+    if(collectSubs.lastIncomplete>0){
+      alert(m.type==="commission"
+        ? "서브메뉴 중 이름 또는 URL이 비어있는 항목이 있어요. 둘 다 입력한 뒤 다시 저장해 주세요."
+        : "서브메뉴 중 이름이 비어있는 항목이 있어요. 입력한 뒤 다시 저장해 주세요.");
+      return false;
+    }
     if(!m.label){ alert("메뉴 이름을 입력해 주세요."); return false; }
     if(typeof m.order!=="number") m.order=menus.length;
     if(isNew) delete m.id;
@@ -151,14 +157,24 @@ function addSubRow(){
 }
 function refreshSubEmpty(){ const ed=document.getElementById("sub-editor"); document.getElementById("sub-empty").style.display=ed.querySelectorAll(".sub-item").length?"none":""; }
 function collectSubs(){
-  const ed=document.getElementById("sub-editor"); if(!ed)return [];
+  const ed=document.getElementById("sub-editor"); if(!ed) return [];
   const kind=ed.dataset.kind;
-  return [...ed.querySelectorAll(".sub-item")].map(r=>{
+  const items=[]; let incomplete=0;
+  [...ed.querySelectorAll(".sub-item")].forEach(r=>{
     const label=r.querySelector(".sub-label").value.trim();
-    if(kind==="link"){ const url=r.querySelector(".sub-url").value.trim(); return (label&&url)?{label,url}:null; }
-    let slug=r.querySelector(".sub-slug").value.trim()||label.toLowerCase().replace(/\s+/g,"-");
-    return label?{label,slug}:null;
-  }).filter(Boolean);
+    if(kind==="link"){
+      const url=r.querySelector(".sub-url").value.trim();
+      if(!label&&!url) return;
+      if(!label||!url){ incomplete++; return; }
+      items.push({label,url});
+    }else{
+      if(!label) return;
+      const slug=r.querySelector(".sub-slug").value.trim()||label.toLowerCase().replace(/\s+/g,"-");
+      items.push({label,slug});
+    }
+  });
+  collectSubs.lastIncomplete=incomplete;
+  return items;
 }
 
 /* ============================================================================ 작업물 */
