@@ -1,7 +1,7 @@
-import { auth } from "./firebase-config.js";
+import { auth } from "./firebase-config.js?v=3";
 import { onAuthStateChanged, signInWithEmailAndPassword, signOut }
   from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
-import { initSite } from "./render.js";
+import { initSite } from "./render.js?v=3";
 import "./admin.js"; // window.* 편집 함수 등록
 
 const appRoot = document.getElementById("app");
