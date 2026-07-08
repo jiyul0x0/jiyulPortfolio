@@ -57,13 +57,13 @@ function applyTheme(hex){
 
 export function imageSliderHTML(images,alt){
   if(images.length<=1){
-    return `<div class="detail-hero" style="aspect-ratio:16/8"><img src="${esc(images[0]||'')}" alt="${esc(alt)}"
-      style="width:100%;height:100%;object-fit:cover;display:block"></div>`;
+    return `<div class="detail-hero" style="aspect-ratio:16/8;background:var(--surface-soft)"><img src="${esc(images[0]||'')}" alt="${esc(alt)}"
+      style="width:100%;height:100%;object-fit:contain;display:block"></div>`;
   }
   const slides=images.map((src,i)=>`<img src="${esc(src)}" alt="${esc(alt)}" data-i="${i}"
-      style="width:100%;height:100%;object-fit:cover;display:${i===0?'block':'none'};position:absolute;inset:0">`).join("");
+      style="width:100%;height:100%;object-fit:contain;display:${i===0?'block':'none'};position:absolute;inset:0">`).join("");
   const dots=images.map((_,i)=>`<span class="slider-dot ${i===0?'on':''}" data-i="${i}"></span>`).join("");
-  return `<div class="detail-hero slider" style="aspect-ratio:16/8" data-idx="0" data-count="${images.length}">
+  return `<div class="detail-hero slider" style="aspect-ratio:16/8;background:var(--surface-soft)" data-idx="0" data-count="${images.length}">
       ${slides}
       <button class="slider-nav prev" onclick="window.workSlide(this,-1)" aria-label="이전 이미지">‹</button>
       <button class="slider-nav next" onclick="window.workSlide(this,1)" aria-label="다음 이미지">›</button>
