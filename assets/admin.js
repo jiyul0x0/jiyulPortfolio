@@ -5,7 +5,7 @@
 // ============================================================================
 
 import { api } from "./data.js?v=3";
-import { esc, shade, accNo, mediaBlock, router, youtubeId } from "./render.js?v=5";
+import { esc, shade, accNo, mediaBlock, router, youtubeId } from "./render.js?v=6";
 import { storage } from "./firebase-config.js?v=3";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-storage.js";
 
